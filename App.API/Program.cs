@@ -1,5 +1,6 @@
 using App.Repositories.Extensions;
 using App.Services.Extensions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace App.API
 {
@@ -11,8 +12,8 @@ namespace App.API
 
             builder.Services.AddRepository(builder.Configuration).AddService(builder.Configuration);
 
+            builder.Services.AddControllers(); builder.Services.Configure<ApiBehaviorOptions>(opt => opt.SuppressModelStateInvalidFilter = true);
 
-            builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
