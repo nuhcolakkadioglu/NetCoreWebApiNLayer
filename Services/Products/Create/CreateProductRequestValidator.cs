@@ -1,19 +1,19 @@
 ﻿using App.Repositories.Products;
 using FluentValidation;
 
-namespace App.Services.Products
+namespace App.Services.Products.Create
 {
     public class CreateProductRequestValidator : AbstractValidator<CreateProductRequest>
     {
-        private readonly  IProductRepository _repository;
+        private readonly IProductRepository _repository;
         public CreateProductRequestValidator(IProductRepository repository)
         {
 
             RuleFor(m => m.Name)
                 .NotEmpty()
                 .Length(3, 10);
-                //.Must(MustUniqueProductName).WithMessage("aynı isimde urun var");
-                
+            //.Must(MustUniqueProductName).WithMessage("aynı isimde urun var");
+
 
             RuleFor(m => m.Price)
                 .GreaterThan(0);

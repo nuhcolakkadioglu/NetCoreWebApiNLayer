@@ -1,11 +1,15 @@
 ﻿using App.Repositories;
 using App.Repositories.Products;
+using App.Services.Products.Create;
+using App.Services.Products.Update;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Net;
 
 namespace App.Services.Products;
 
-public class ProductService(IProductRepository _productRepository, IUnitOfWork _unitOfWork) : IProductService
+public class ProductService(IProductRepository _productRepository, IUnitOfWork _unitOfWork,IMapper _mapper) : IProductService
 {
     public async Task<ServiceResult<List<ProductDto>>> GetTopPriceProductsAsyn(int count)
     {
@@ -19,9 +23,8 @@ public class ProductService(IProductRepository _productRepository, IUnitOfWork _
     public async Task<ServiceResult<List<ProductDto>>> GetAllListAsync()
     {
         var data = await _productRepository.GetAll().ToListAsync();
-        var result = data.Select(m => new ProductDto(m.Id, m.Name, m.Price, m.Stock)).ToList();
-
-        return ServiceResult<List<ProductDto>>.Success(result);
+        var productAsDto = _mapper.Map<List<ProductDto>>(data);
+        return ServiceResult<List<ProductDto>>.Success(productAsDto);
     }
     public async Task<ServiceResult<List<ProductDto>>> GetPagedAllListAsync(int pageNumber, int pageSize)
     {
@@ -31,8 +34,9 @@ public class ProductService(IProductRepository _productRepository, IUnitOfWork _
                                                .ToListAsync();
 
         var result = products.Select(m => new ProductDto(m.Id, m.Name, m.Price, m.Stock)).ToList();
+        var productAsDto = _mapper.Map<List<ProductDto>>(result);
 
-        return ServiceResult<List<ProductDto>>.Success(result);
+        return ServiceResult<List<ProductDto>>.Success(productAsDto);
 
     }
     public async Task<ServiceResult<ProductDto?>> GetByIdAsync(int id)
@@ -42,8 +46,9 @@ public class ProductService(IProductRepository _productRepository, IUnitOfWork _
         if (product is null)
             return ServiceResult<ProductDto?>.Fail(errorrMessage: "product bulunamadı", HttpStatusCode.NotFound);
 
-        var result = new ProductDto(product.Id, product.Name, product.Price, product.Stock);
-        return ServiceResult<ProductDto?>.Success(result);
+        var productAsDto = _mapper.Map<ProductDto>(product);
+
+        return ServiceResult<ProductDto?>.Success(productAsDto);
     }
     public async Task<ServiceResult<CreateProductResponse>> CreateAsync(CreateProductRequest request)
     {
@@ -51,13 +56,8 @@ public class ProductService(IProductRepository _productRepository, IUnitOfWork _
 
         if (anyProduct)
             return ServiceResult<CreateProductResponse>.Fail("Ürün zaten var !");
-
-        var product = new Product
-        {
-            Name = request.Name,
-            Price = request.Price,
-            Stock = request.Stock,
-        };
+ 
+        var product = _mapper.Map<Product>(request);
 
         await _productRepository.AddAsync(product);
         int result = await _unitOfWork.SaveChangesAsync();
@@ -72,11 +72,10 @@ public class ProductService(IProductRepository _productRepository, IUnitOfWork _
         if (product is null)
             return ServiceResult.Fail("Kayıt bulunamadı");
 
-        product.Name = request.Name;
-        product.Price = request.Price;
-        product.Stock = request.Stock;
+        var productAsDto = _mapper.Map<Product>(request);
 
-        _productRepository.Update(product);
+
+        _productRepository.Update(productAsDto);
         int result = await _unitOfWork.SaveChangesAsync();
 
         return result > 0 ? ServiceResult.Success(HttpStatusCode.NoContent)
