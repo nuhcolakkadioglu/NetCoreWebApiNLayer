@@ -8,6 +8,7 @@ namespace App.Repositories
         IQueryable<T> Where(Expression<Func<T, bool>> predicate);
         ValueTask<T?> GetByIdAsync(int id);
         ValueTask AddAsync(T model);
+        ValueTask<bool> AnyAsync(Expression<Func<T, bool>> predicate);
         void Update(T model);
         void Delete(T model);
 

@@ -47,6 +47,11 @@ public class ProductService(IProductRepository _productRepository, IUnitOfWork _
     }
     public async Task<ServiceResult<CreateProductResponse>> CreateAsync(CreateProductRequest request)
     {
+        var anyProduct = await _productRepository.AnyAsync(m => m.Name == request.Name);
+
+        if (anyProduct)
+            return ServiceResult<CreateProductResponse>.Fail("Ürün zaten var !");
+
         var product = new Product
         {
             Name = request.Name,

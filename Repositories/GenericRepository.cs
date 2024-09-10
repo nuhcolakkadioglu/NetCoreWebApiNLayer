@@ -17,6 +17,10 @@ namespace App.Repositories
 
         public void Update(T model) => _dbset.Update(model);
 
-        public IQueryable<T> Where(Expression<Func<T, bool>> predicate) => _dbset.Where(predicate).AsQueryable().AsNoTracking();
+        public IQueryable<T> Where(Expression<Func<T, bool>> predicate)
+            => _dbset.Where(predicate).AsQueryable().AsNoTracking();
+
+        public async ValueTask<bool> AnyAsync(Expression<Func<T, bool>> predicate)
+            =>await _dbset.AnyAsync(predicate);
     }
 }

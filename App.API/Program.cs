@@ -1,4 +1,5 @@
 using App.Repositories.Extensions;
+using App.Services;
 using App.Services.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,7 +13,12 @@ namespace App.API
 
             builder.Services.AddRepository(builder.Configuration).AddService(builder.Configuration);
 
-            builder.Services.AddControllers(); builder.Services.Configure<ApiBehaviorOptions>(opt => opt.SuppressModelStateInvalidFilter = true);
+            builder.Services.AddControllers(options =>
+            {
+                options.Filters.Add<FluentValidatonFilter>();
+                options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
+            });
+            builder.Services.Configure<ApiBehaviorOptions>(opt => opt.SuppressModelStateInvalidFilter = true);
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
