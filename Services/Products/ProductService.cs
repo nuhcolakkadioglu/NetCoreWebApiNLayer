@@ -1,15 +1,15 @@
 ﻿using App.Repositories;
 using App.Repositories.Products;
+using App.Services.ExceptionHandlers;
 using App.Services.Products.Create;
 using App.Services.Products.Update;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 using System.Net;
 
 namespace App.Services.Products;
 
-public class ProductService(IProductRepository _productRepository, IUnitOfWork _unitOfWork,IMapper _mapper) : IProductService
+public class ProductService(IProductRepository _productRepository, IUnitOfWork _unitOfWork, IMapper _mapper) : IProductService
 {
     public async Task<ServiceResult<List<ProductDto>>> GetTopPriceProductsAsyn(int count)
     {
@@ -52,11 +52,12 @@ public class ProductService(IProductRepository _productRepository, IUnitOfWork _
     }
     public async Task<ServiceResult<CreateProductResponse>> CreateAsync(CreateProductRequest request)
     {
+        throw new CriticalException("CriticalException ateş ettti");
         var anyProduct = await _productRepository.AnyAsync(m => m.Name == request.Name);
 
         if (anyProduct)
             return ServiceResult<CreateProductResponse>.Fail("Ürün zaten var !");
- 
+
         var product = _mapper.Map<Product>(request);
 
         await _productRepository.AddAsync(product);

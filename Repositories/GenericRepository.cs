@@ -21,6 +21,6 @@ namespace App.Repositories
             => _dbset.Where(predicate).AsQueryable().AsNoTracking();
 
         public async ValueTask<bool> AnyAsync(Expression<Func<T, bool>> predicate)
-            =>await _dbset.AnyAsync(predicate);
+            => await _dbset.AnyAsync(predicate);
     }
 }

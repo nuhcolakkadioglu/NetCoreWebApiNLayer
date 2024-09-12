@@ -24,13 +24,13 @@ namespace App.API
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+            app.UseExceptionHandler(z => { });
 
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
