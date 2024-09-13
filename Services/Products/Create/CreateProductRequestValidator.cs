@@ -8,6 +8,7 @@ namespace App.Services.Products.Create
         private readonly IProductRepository _repository;
         public CreateProductRequestValidator(IProductRepository repository)
         {
+            _repository = repository;
 
             RuleFor(m => m.Name)
                 .NotEmpty()
@@ -20,7 +21,6 @@ namespace App.Services.Products.Create
 
             RuleFor(m => m.Stock)
              .InclusiveBetween(1, 100);
-            _repository = repository;
         }
 
         //private bool MustUniqueProductName(string productName)

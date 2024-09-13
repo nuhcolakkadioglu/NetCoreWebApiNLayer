@@ -1,8 +1,8 @@
 ﻿using App.Repositories;
 using App.Repositories.Products;
-using App.Services.ExceptionHandlers;
 using App.Services.Products.Create;
 using App.Services.Products.Update;
+using App.Services.Products.UpdateStock;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -15,7 +15,8 @@ public class ProductService(IProductRepository _productRepository, IUnitOfWork _
     {
         var data = await _productRepository.GetTopPriceProductsAsyn(count);
 
-        var result = data.Select(m => new ProductDto(m.Id, m.Name, m.Price, m.Stock)).ToList();
+
+        var result = _mapper.Map<List<ProductDto>>(data); // data.Select(m => new ProductDto(m.Id, m.Name, m.Price, m.Stock)).ToList();
 
 
         return ServiceResult<List<ProductDto>>.Success(result);
@@ -52,7 +53,7 @@ public class ProductService(IProductRepository _productRepository, IUnitOfWork _
     }
     public async Task<ServiceResult<CreateProductResponse>> CreateAsync(CreateProductRequest request)
     {
-        throw new CriticalException("CriticalException ateş ettti");
+        //        throw new CriticalException("CriticalException ateş ettti");
         var anyProduct = await _productRepository.AnyAsync(m => m.Name == request.Name);
 
         if (anyProduct)
@@ -73,10 +74,17 @@ public class ProductService(IProductRepository _productRepository, IUnitOfWork _
         if (product is null)
             return ServiceResult.Fail("Kayıt bulunamadı");
 
-        var productAsDto = _mapper.Map<Product>(request);
+        var anyProduct = await _productRepository
+
+            .Where(m => m.Name == request.Name && m.Id != product.Id).AnyAsync();
+
+        if (anyProduct)
+            return ServiceResult.Fail("bu isimde ürün daha önce eklenmiş", HttpStatusCode.BadRequest);
 
 
-        _productRepository.Update(productAsDto);
+        product = _mapper.Map(request, product);
+
+        _productRepository.Update(product);
         int result = await _unitOfWork.SaveChangesAsync();
 
         return result > 0 ? ServiceResult.Success(HttpStatusCode.NoContent)

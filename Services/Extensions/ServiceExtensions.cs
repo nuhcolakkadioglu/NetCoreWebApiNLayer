@@ -1,4 +1,5 @@
-﻿using App.Services.ExceptionHandlers;
+﻿using App.Services.Categories;
+using App.Services.ExceptionHandlers;
 using App.Services.Products;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -14,6 +15,7 @@ public static class ServiceExtensions
     {
 
         services.AddScoped<IProductService, ProductService>();
+        services.AddScoped<ICategoryService, CategoryService>();
 
         services.AddFluentValidationAutoValidation();
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
