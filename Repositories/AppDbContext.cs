@@ -16,5 +16,7 @@ namespace App.Repositories
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             base.OnModelCreating(modelBuilder);
         }
+
+       
     }
 }

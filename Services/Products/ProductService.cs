@@ -34,8 +34,7 @@ public class ProductService(IProductRepository _productRepository, IUnitOfWork _
                                                .Take(pageSize)
                                                .ToListAsync();
 
-        var result = products.Select(m => new ProductDto(m.Id, m.Name, m.Price, m.Stock)).ToList();
-        var productAsDto = _mapper.Map<List<ProductDto>>(result);
+        var productAsDto = _mapper.Map<List<ProductDto>>(products);
 
         return ServiceResult<List<ProductDto>>.Success(productAsDto);
 

@@ -14,10 +14,10 @@ namespace App.Services.Categories
             CreateMap<Category, CategoryWithProductsDto>().ReverseMap();
 
             CreateMap<CreateCategoryRequest, Category>()
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name.ToUpperInvariant()));
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name.ToUpper()));
 
             CreateMap<UpdateCategoryRequest, Category>()
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name.ToUpperInvariant()));
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name.ToUpper()));
 
         }
     }

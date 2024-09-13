@@ -11,10 +11,10 @@ namespace App.Services.Products
         {
             CreateMap<Product, ProductDto>().ReverseMap();
             CreateMap<CreateProductRequest, Product>()
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name.ToUpperInvariant()));
+                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name.ToUpper()));
 
             CreateMap<UpdateProductRequest, Product>()
-                  .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name.ToUpperInvariant()));
+                  .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name.ToUpper()));
         }
     }
 }
