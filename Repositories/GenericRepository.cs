@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace App.Repositories
 {
-    public class GenericRepository<T>(AppDbContext _context) : IGenericRepository<T> where T : class
+    public class GenericRepository<T,Tid>(AppDbContext _context) : IGenericRepository<T, Tid> where T : class where Tid : struct
     {
         protected AppDbContext Context = _context;
         private readonly DbSet<T> _dbset = _context.Set<T>();

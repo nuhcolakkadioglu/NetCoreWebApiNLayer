@@ -2,7 +2,7 @@
 
 namespace App.Repositories.Categories
 {
-    public class CategoryRepository(AppDbContext appDbContext) : GenericRepository<Category>(appDbContext), ICategoryRepository
+    public class CategoryRepository(AppDbContext appDbContext) : GenericRepository<Category,int>(appDbContext), ICategoryRepository
     {
         public IQueryable<Category> GetCategoryWithProducts()
         {

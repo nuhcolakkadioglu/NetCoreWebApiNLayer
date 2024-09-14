@@ -1,6 +1,8 @@
-﻿using App.Services.Categories;
+﻿using App.Repositories.Categories;
+using App.Services.Categories;
 using App.Services.Categories.Create;
 using App.Services.Categories.update;
+using App.Services.Filters;
 using App.Services.Products.Create;
 using App.Services.Products.Update;
 using Microsoft.AspNetCore.Http;
@@ -22,6 +24,8 @@ namespace App.API.Controllers
         [HttpGet("{id:int}/products")]
         public async Task<IActionResult> GetCategoryWithProductsAsync(int id)
                => CreateActionResult(await _categoryService.GetCategoryWithProductsAsync(id));
+
+        [ServiceFilter(typeof(NotFoundFilter<Category, int>))]
 
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetById(int id)
