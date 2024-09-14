@@ -2,7 +2,7 @@
 
 namespace App.Repositories
 {
-    public interface IGenericRepository<T, TId> where T :class where TId : struct
+    public interface IGenericRepository<T, TId> where T : class where TId : struct
     {
         IQueryable<T> GetAll();
         IQueryable<T> Where(Expression<Func<T, bool>> predicate);

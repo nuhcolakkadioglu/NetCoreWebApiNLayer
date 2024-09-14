@@ -3,9 +3,7 @@ using App.Repositories.Categories;
 using App.Services.Categories.Create;
 using App.Services.Categories.Dto;
 using App.Services.Categories.update;
-using App.Services.Filters;
 using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace App.Services.Categories

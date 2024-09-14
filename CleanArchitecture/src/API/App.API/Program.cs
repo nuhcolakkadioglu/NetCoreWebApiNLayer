@@ -1,4 +1,10 @@
 
+using App.API.ExceptionHandler;
+using App.API.Filters;
+using App.Application.Extensions;
+using App.Persistence.Extensions;
+using Microsoft.AspNetCore.Mvc;
+
 namespace App.API
 {
     public class Program
@@ -7,17 +13,25 @@ namespace App.API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            builder.Services.AddControllers(options =>
+            {
+                options.Filters.Add<FluentValidatonFilter>();
+                options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
+            });
+            builder.Services.Configure<ApiBehaviorOptions>(opt => opt.SuppressModelStateInvalidFilter = true);
+            builder.Services.AddRepository(builder.Configuration).AddService(builder.Configuration);
 
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddScoped(typeof(NotFoundFilter<,>));
+            builder.Services.AddExceptionHandler<CriticalExceptionHandler>();
+            builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+            app.UseExceptionHandler(z => { });
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
+             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
