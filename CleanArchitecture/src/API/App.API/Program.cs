@@ -1,7 +1,10 @@
 
 using App.API.ExceptionHandler;
+using App.API.Extensions;
 using App.API.Filters;
+using App.Application.Contracts.Caching;
 using App.Application.Extensions;
+using App.Caching;
 using App.Persistence.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,12 +21,9 @@ namespace App.API
                 options.Filters.Add<FluentValidatonFilter>();
                 options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
             });
-            builder.Services.Configure<ApiBehaviorOptions>(opt => opt.SuppressModelStateInvalidFilter = true);
-            builder.Services.AddRepository(builder.Configuration).AddService(builder.Configuration);
 
-            builder.Services.AddScoped(typeof(NotFoundFilter<,>));
-            builder.Services.AddExceptionHandler<CriticalExceptionHandler>();
-            builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+            builder.Services.AddApiServiceExtensions(builder.Configuration);
+
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
@@ -31,7 +31,7 @@ namespace App.API
             var app = builder.Build();
             app.UseExceptionHandler(z => { });
 
-             if (app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();

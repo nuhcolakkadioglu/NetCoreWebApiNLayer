@@ -1,6 +1,5 @@
 ﻿using App.Application;
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Http;
 using System.Net;
 
 namespace App.API.ExceptionHandler

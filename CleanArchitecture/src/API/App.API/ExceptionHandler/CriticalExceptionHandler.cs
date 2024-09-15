@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Http;
-using App.Domain.Exceptions;
+﻿using App.Domain.Exceptions;
+using Microsoft.AspNetCore.Diagnostics;
 
 namespace App.API.ExceptionHandler
 {

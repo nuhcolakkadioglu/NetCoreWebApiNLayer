@@ -6,11 +6,17 @@ using App.Application.Features.Products.UpdateStock;
 using App.Domain.Entities;
 using AutoMapper;
 using System.Net;
-
+using App.Application.Contracts.Caching;
 namespace App.Application.Features.Products;
 
-public class ProductService(IProductRepository _productRepository, IUnitOfWork _unitOfWork, IMapper _mapper) : IProductService
+public class ProductService(
+    IProductRepository _productRepository,
+    IUnitOfWork _unitOfWork,
+    IMapper _mapper,
+    ICacheService _cacheService) : IProductService
 {
+
+    private const string productListCacheKey = "productListCacheKey";
     public async Task<ServiceResult<List<ProductDto>>> GetTopPriceProductsAsyn(int count)
     {
         var data = await _productRepository.GetTopPriceProductsAsyn(count);
@@ -23,8 +29,17 @@ public class ProductService(IProductRepository _productRepository, IUnitOfWork _
     }
     public async Task<ServiceResult<List<ProductDto>>> GetAllListAsync()
     {
+
+        var productListAsCached = await _cacheService.GetAsync<List<ProductDto>>(productListCacheKey);
+
+        if (productListAsCached is not null)
+            return ServiceResult<List<ProductDto>>.Success(productListAsCached);
+
+
         var data = await _productRepository.GetAllAsync();
         var productAsDto = _mapper.Map<List<ProductDto>>(data);
+        await _cacheService.AddAsync(productListCacheKey, productAsDto, TimeSpan.FromMinutes(10));
+
         return ServiceResult<List<ProductDto>>.Success(productAsDto);
     }
     public async Task<ServiceResult<List<ProductDto>>> GetPagedAllListAsync(int pageNumber, int pageSize)
